@@ -1,0 +1,51 @@
+{
+  "info": {
+    "name": "Leftover Link API",
+    "description": "Local API flow for account registration, role-based sign-in, offers, claims, and administrator review.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "offerId", "value": "replace-with-offer-id" },
+    { "key": "partnerId", "value": "replace-with-partner-id" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        { "name": "Check API and database", "request": { "method": "GET", "url": "{{baseUrl}}/api/health" } }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        { "name": "Register consumer", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Demo Consumer\",\n  \"email\": \"consumer@example.org\",\n  \"password\": \"change-this-demo-password\",\n  \"role\": \"consumer\",\n  \"neighborhood\": \"Northside\"\n}" }, "url": "{{baseUrl}}/api/auth/register" } },
+        { "name": "Register restaurant (pending admin approval)", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Demo Restaurant Contact\",\n  \"email\": \"restaurant@example.org\",\n  \"password\": \"change-this-demo-password\",\n  \"role\": \"restaurant\",\n  \"organizationName\": \"Demo Kitchen\",\n  \"neighborhood\": \"Northside\"\n}" }, "url": "{{baseUrl}}/api/auth/register" } },
+        { "name": "Sign in", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"email\": \"consumer@example.org\",\n  \"password\": \"change-this-demo-password\",\n  \"role\": \"consumer\"\n}" }, "url": "{{baseUrl}}/api/auth/login" } },
+        { "name": "Current account", "request": { "method": "GET", "url": "{{baseUrl}}/api/auth/me" } },
+        { "name": "Sign out", "request": { "method": "POST", "url": "{{baseUrl}}/api/auth/logout" } }
+      ]
+    },
+    {
+      "name": "Offers and claims",
+      "item": [
+        { "name": "Browse available offers", "request": { "method": "GET", "url": "{{baseUrl}}/api/offers" } },
+        { "name": "My saved offers (consumer)", "request": { "method": "GET", "url": "{{baseUrl}}/api/offers/saved/mine" } },
+        { "name": "Save offer (consumer)", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"saved\": true\n}" }, "url": "{{baseUrl}}/api/offers/{{offerId}}/saved" } },
+        { "name": "Create offer (restaurant)", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"title\": \"Seasonal vegetable boxes\",\n  \"description\": \"Fresh surplus vegetables, packed this afternoon.\",\n  \"category\": \"produce\",\n  \"quantity\": \"8 boxes\",\n  \"neighborhood\": \"Northside\",\n  \"pickupStartsAt\": \"2030-06-20T16:00:00.000Z\",\n  \"pickupEndsAt\": \"2030-06-20T17:30:00.000Z\",\n  \"handlingNotes\": \"Keep chilled.\"\n}" }, "url": "{{baseUrl}}/api/offers" } },
+        { "name": "My offers (restaurant)", "request": { "method": "GET", "url": "{{baseUrl}}/api/offers/mine" } },
+        { "name": "Claim offer (consumer)", "request": { "method": "POST", "url": "{{baseUrl}}/api/offers/{{offerId}}/claim" } },
+        { "name": "My claims (consumer)", "request": { "method": "GET", "url": "{{baseUrl}}/api/offers/claims/mine" } },
+        { "name": "Update offer status", "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"collected\"\n}" }, "url": "{{baseUrl}}/api/offers/{{offerId}}/status" } }
+      ]
+    },
+    {
+      "name": "Administration",
+      "item": [
+        { "name": "Pending restaurant applications", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/partners?status=pending" } },
+        { "name": "Approve restaurant", "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"active\"\n}" }, "url": "{{baseUrl}}/api/admin/partners/{{partnerId}}/status" } },
+        { "name": "List offers", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/offers" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+node_modules/
+.env
+npm-debug.log*
+.DS_Store
+AGENTS.md
+sources/
+leftover-link-complete/
+leftover-link-complete.zip
